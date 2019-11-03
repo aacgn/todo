@@ -1,0 +1,7 @@
+<div class="card"style="margin-bottom: 10px;">
+    <div class="card-body">
+        <h5 class="card-title">{{ task$.title }}</h5>
+        <p class="card-text">{{ task$.description }}</p>
+        <button type="button" class="btn btn-success" *ngIf="!isTaskComplete" (click)="completeTask(task$)">Complete</button>
+    </div>
+</div>
