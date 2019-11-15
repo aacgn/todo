@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from '../../models/task.model';
 import { Observable } from 'rxjs';
-import { TaskListFacade } from '../../task-list.facade';
+import { TaskFacade } from '../../task.facade';
 
 @Component({
   selector: 'app-task-card-list',
@@ -13,7 +13,7 @@ export class TaskCardListComponent implements OnInit {
   public tasks$: Task[];
   public isUpdating$: Observable<boolean>;
 
-  constructor(private taskListFacade: TaskListFacade) {
+  constructor(private taskListFacade: TaskFacade) {
     this.isUpdating$ = this.taskListFacade.isUpdating$();
   }
 
@@ -27,8 +27,7 @@ export class TaskCardListComponent implements OnInit {
     );
   }
 
-  public completeTask(index: string): void {
-    const task = JSON.parse(JSON.stringify(this.tasks$[+index]));
+  public completeTask(task: Task): void {
     task.isComplete = true;
     this.taskListFacade.updateTask(task);
   }

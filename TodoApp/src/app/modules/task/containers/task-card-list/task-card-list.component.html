@@ -1,8 +1,8 @@
 <div class="center">
+    <h4>Task</h4>
     <h5>Task List</h5>
     <div *ngFor="let task of tasks$; let i = index" style="width: 500px;">
         <app-task-card
-            [index$]="i"
             [task$]="task"
             (completeTask$)="completeTask($event)">
         </app-task-card>

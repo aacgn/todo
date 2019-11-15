@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Task } from '../models/task.model';
 
 @Injectable()
-export class TaskListState {
+export class TaskState {
 
     private updating$ = new BehaviorSubject<boolean>(false);
     private tasks$ = new BehaviorSubject<Task[]>(null);

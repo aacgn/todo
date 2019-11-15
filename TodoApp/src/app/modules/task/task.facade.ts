@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { TaskApi } from './api/task.api';
-import { TaskListState } from './state/taks-list.state';
+import { TaskState } from './state/taks.state';
 import { Observable } from 'rxjs';
 import { Task } from './models/task.model';
 
 @Injectable()
-export class TaskListFacade {
+export class TaskFacade {
 
-    constructor(private taskApi: TaskApi, private taskListState: TaskListState){}
+    constructor(private taskApi: TaskApi, private taskListState: TaskState){}
 
     public isUpdating$(): Observable<boolean> {
         return this.taskListState.isUpdating$();
