@@ -6,7 +6,7 @@ import { Task } from '../models/task.model';
 @Injectable()
 export class TaskApi {
     
-    readonly API = 'http://localhost:8080/api/v1/task';
+    private readonly API = 'http://localhost:8080/api/v1/task';
 
     constructor(private http: HttpClient){}
 

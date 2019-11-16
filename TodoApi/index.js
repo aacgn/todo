@@ -8,24 +8,40 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 
+const users = [
+  {
+    'id': 1,
+    'userName': 'admin',
+    'fullName': 'Administrator, Todo',
+    'password': '123456',
+    'role': 'Administrator'
+  },
+  {
+    'id': 2,
+    'userName': 'antonio_n',
+    'fullName': 'Neto, Antonio',
+    'password': '654321',
+    'role': 'Contributor'
+  }
+];
 const tasks = [
   {
     'id': 1,
-    'userName': 'Feijão',
+    'userId': 1,
     'title':  'Fazer PoC',
     'description': 'Preciso construir uma PoC com uma arquitetura de desenvolvimento angular em 3 camadas',
     'isComplete': false
   },
   {
     'id': 2,
-    'userName': 'João',
+    'userId': 1,
     'title':  'Dormir',
     'description': 'Lembrar de ir dormir de 00:00 para ter pelo menos 6 horas de sono.',
     'isComplete': true
   },
   {
     'id': 3,
-    'userName': 'Fernando',
+    'userId': 2,
     'title':  'Preciso dormir pqp',
     'description': 'Mermão vá dormir ja são 01:00.',
     'isComplete': true
@@ -53,24 +69,35 @@ passport.use(new JwtStrategy(passportOpts, function (jwtPayload, done) {
 }))
 
 passport.serializeUser(function (user, done) {
-  done(null, user.username)
+  done(null, user.id)
 });
 
 app.post('/api/v1/login', function (req, res) { 
-    const {username, password} = req.body;
-    const user = { 
-        'username': username, 
-        'role': 'admin'
+  const {userName, password} = req.body;
+  const user = users.find(u => u.userName === userName && u.password === password);
+  if (user) {
+    const loggedUser = {
+      'id': user.id,
+      'fullName': user.fullName,
+      'role': user.role
     };
     const token = jwt.sign(user, SECRET, { expiresIn: 600 }) 
     const refreshToken = randtoken.uid(256);
-    refreshTokens[refreshToken] = username;
-    return res.json({jwt: token, refreshToken: refreshToken});
+    refreshTokens[refreshToken] = user.id;
+    const JWT = {
+      token,
+      refreshToken
+    };
+    return res.json({loggedUser, JWT});
+  } else {
+    return res.sendStatus(401);
+  }
 });
 
 app.post('/api/v1/logout', function (req, res) { 
   const refreshToken = req.body.refreshToken;
-  if (refreshToken in refreshTokens) { 
+  const isRefreshTokenValid = refreshTokens[refreshToken] != undefined;
+  if (isRefreshTokenValid) { 
     delete refreshTokens[refreshToken];
   } 
   return res.sendStatus(204); 
@@ -78,34 +105,34 @@ app.post('/api/v1/logout', function (req, res) {
 
 app.post('/api/v1/refresh', function (req, res) {
     const refreshToken = req.body.refreshToken;
-    
-
-    if (refreshToken in refreshTokens) {
-      const user = {
-        'username': refreshTokens[refreshToken],
-        'role': 'admin'
+    const isRefreshTokenValid = refreshTokens[refreshToken] != undefined;
+    if (isRefreshTokenValid) {
+      const user = user.find(u => u.id === refreshTokens[refreshToken]);
+      if (user) {
+        const token = jwt.sign(user, SECRET, { expiresIn: 600 });
+        const JWT = {
+          token,
+          refreshToken
+        };
+        return res.json(JWT);
       }
-      const token = jwt.sign(user, SECRET, { expiresIn: 600 });
-      return res.json({jwt: token})
     }
-    else {
-      return res.sendStatus(401);
-    }
+    return res.sendStatus(401);
 });
 
 // app.get('/api/v1/tasks', passport.authenticate('jwt'), function (req, res) {
 //   res.json({value: tasks });
 // })
 
-app.get('/api/v1/task', function (req, res) {
+app.get('/api/v1/task', passport.authenticate('jwt'), function (req, res) {
   return res.json(tasks);
 })
 
-app.post('/api/v1/task', function (req, res) {
-  const {userName, title, description, isComplete} = req.body;
+app.post('/api/v1/task', passport.authenticate('jwt'), function (req, res) {
+  const {userId, title, description, isComplete} = req.body;
   const newTask = {
     id: tasks.length > 0 ? tasks[tasks.length - 1].id + 1: 1,
-    userName,
+    userId,
     title,
     description,
     isComplete
@@ -118,13 +145,12 @@ app.post('/api/v1/task', function (req, res) {
   }
 })
 
-app.put('/api/v1/task/:id', function (req, res) {
-  let hasTaskFound = false;
+app.put('/api/v1/task/:id', passport.authenticate('jwt'), function (req, res) {
   const taskId = +req.params.id;
-  const { id, userName, title, description, isComplete } = req.body;
+  const { id, userId, title, description, isComplete } = req.body;
   const updateTask = {
     id,
-    userName,
+    userId,
     title,
     description,
     isComplete

@@ -5,8 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '', 
-    redirectTo: '/task/task-list',
+    redirectTo: '/login',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./core/auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: 'task',
