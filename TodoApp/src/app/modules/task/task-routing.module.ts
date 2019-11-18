@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TaskCardListComponent } from './containers/task-card-list/task-card-list.component';
 import { TaskListkGuard } from './guards/task-list.guard';
+import { TaskListComponent } from './containers/task-list/task-list.component';
+import { AddTaskComponent } from './containers/add-task/add-task.component';
+import { AddTaskGuard } from './guards/add-task.guard';
 
 
 const routes: Routes = [
@@ -11,8 +13,13 @@ const routes: Routes = [
   },
   {
     path: 'task-list',
-    component: TaskCardListComponent,
+    component: TaskListComponent,
     canActivate: [TaskListkGuard]
+  },
+  {
+    path: 'add-task',
+    component: AddTaskComponent,
+    canActivate: [AddTaskGuard]
   }
 ];
 

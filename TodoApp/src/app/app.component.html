@@ -1,8 +1,8 @@
 <div class="center">
-    <header class="masthead mb-auto">
-            <div class="inner">
-                <h3 class="masthead-brand">Todo</h3>
+    <router-outlet>
+            <div class="space-between">
+                    <h3 class="masthead-brand">{{title}}</h3>
+                    <button *ngIf="isUserLogged" type="button" class="btn btn-dark small-margin-left" (click)="logout()">Logout</button>
             </div>
-    </header>
-    <router-outlet></router-outlet>
+    </router-outlet>
 </div>

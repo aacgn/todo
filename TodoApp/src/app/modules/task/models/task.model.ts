@@ -6,12 +6,17 @@ export class Task {
     public description: string;
     public isComplete: boolean;
 
-    constructor(id: number = null, userId: number = null, title: string = null, description: string = null, completed: boolean = null){
+    constructor(
+        id: number = null, 
+        userId: number = null, 
+        title: string = null, 
+        description: string = null, 
+        isComplete: boolean = null){
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.description = description;
-        this.isComplete = completed;
+        this.isComplete = isComplete;
     }
 
 }

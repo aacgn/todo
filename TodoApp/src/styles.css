@@ -5,3 +5,18 @@
     align-items: center;
     justify-content: center;
 }
+
+.space-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.small-margin-bottom {
+    margin-bottom: 10px;
+}
+
+.small-margin-left {
+    margin-left: 10px;
+}

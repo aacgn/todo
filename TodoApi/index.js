@@ -107,7 +107,7 @@ app.post('/api/v1/refresh', function (req, res) {
     const refreshToken = req.body.refreshToken;
     const isRefreshTokenValid = refreshTokens[refreshToken] != undefined;
     if (isRefreshTokenValid) {
-      const user = user.find(u => u.id === refreshTokens[refreshToken]);
+      const user = users.find(u => u.id === refreshTokens[refreshToken]);
       if (user) {
         const token = jwt.sign(user, SECRET, { expiresIn: 600 });
         const JWT = {
@@ -119,10 +119,6 @@ app.post('/api/v1/refresh', function (req, res) {
     }
     return res.sendStatus(401);
 });
-
-// app.get('/api/v1/tasks', passport.authenticate('jwt'), function (req, res) {
-//   res.json({value: tasks });
-// })
 
 app.get('/api/v1/task', passport.authenticate('jwt'), function (req, res) {
   return res.json(tasks);
